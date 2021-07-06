@@ -42,6 +42,7 @@ namespace BigSchool.Controllers
             {
                 LecturerId = User.Identity.GetUserId(),
                 DateTime = viewModel.GetDateTime(),
+
                 CategoryId = viewModel.Category,
                 Place = viewModel.Place
             };
