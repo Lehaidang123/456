@@ -19,6 +19,6 @@ namespace BigSchool.Models
 
         [Key]
         [Column(Order = 2)]
-        public string AttendeeId { get; set; }
+        public string Attendeeid { get; set; }
     }
 }
