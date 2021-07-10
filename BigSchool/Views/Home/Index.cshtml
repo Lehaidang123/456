@@ -5,42 +5,45 @@
     <ul>
         @foreach (var course in Model)
         {
-<li>
-    @course.DateTime - @course.Lecturer.Name
-</li>}
+            <li>
+                @course.DateTime - @course.Lecturer.Name
+            </li>
+}
 
         <hr />
         <ul class="course">
-            @foreach(var course in Model)
+            @foreach (var course in Model)
             {
-            <li >
-                <div class="date">
-                    <div class="month">
-                        @course.DateTime.ToString("MM")
+                <li>
+                    <div class="date">
+                        <div class="month">
+                            @course.DateTime.ToString("MM")
 
 
+                        </div>
+                        <div class="day">
+                            @course.DateTime.ToString("dd")
+
+
+                        </div>
                     </div>
-                    <div class="day">
-                        @course.DateTime.ToString("dd")
+                    <div class="details">
+                        <span class="lecturer">
+                            @course.Lecturer.Name
+                            <button class="btn btn-default  btn-sm js-toggle-follow" data-user-id="@course.LecturerId">Follow</button>
 
+                        </span>
+                        <span class="category">
+                            @course.Category.Name
 
+                        </span>
+                        <button data-course-id=" @course.Id" class="btn btn-default btn-sm js-toggle-attendance">Going</button>
                     </div>
-                </div>
-                <div class="details">
-                    <span class="lecturer">
-                        @course.Lecturer.Name
 
-                    </span>
-                    <span class="category">
-                        @course.Category.Name
 
-                    </span>
+                </li>
+            }
 
-                </div>
-              
-
-            </li>
-            }    
 
         </ul>
     </ul>
@@ -71,3 +74,43 @@
             <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
         </div>
     </div>
+    @section scripts
+            {
+        <script>
+
+            $(document).ready(function()
+            {
+                $(".js-toggle-attendance").click(function (e)
+                {
+                    var button = $(e.target);
+                    $.post("/api/attendances", { CourseId: button.attr("data-course-id") })
+                        .done(function(){
+                        button
+                            .removeClass("btn-default")
+                            .addClass("btn-info")
+                            .text("Going");
+                    })
+                    .fail(function ()
+                    {
+                        alert("Something failed");
+                    });
+                });
+                $("js-toggle-follow").click(function () {
+
+                    var button = $(e.target);
+                    $.post("/api/followings", { followeeId: button.attr("data-user-id") })
+                        .done(function () {
+
+                            button.text("Following");
+                        })
+                        .fail(function () {
+                            alert("something failed");
+                        });
+                });
+            });
+          
+
+
+        </script>
+        }
+
