@@ -26,7 +26,7 @@ namespace BigSchool.Controllers
         public IHttpActionResult Follow(FollowingDto followingDto)
         {
             var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            if (_dbContext.Followings.Any(f => f.FollowerId == userid && f.FollowerId == followingDto.FolloweeId))
+            if (_dbContext.Followings.Any(f => f.FollowerId == userid && f.FolloweeId == followingDto.FolloweeId))
                 return BadRequest(" Following  already exit");
             var following = new Following
             {
@@ -45,7 +45,7 @@ namespace BigSchool.Controllers
 
         private IHttpActionResult BadRequest(string v)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();    
         }
     }
 }

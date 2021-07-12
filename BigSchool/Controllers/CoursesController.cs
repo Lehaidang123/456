@@ -1,4 +1,5 @@
-﻿using BigSchool.Models;
+﻿using Aspose.Pdf;
+using BigSchool.Models;
 using BigSchool.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
@@ -23,7 +24,9 @@ namespace BigSchool.Controllers
         {
             var viewModel = new CourseViewModel
             {
-                Categories = _dbContext.Categories.ToList()
+                
+                Categories = _dbContext.Categories.ToList();
+                
             };
             return View(viewModel);
         }
@@ -55,19 +58,43 @@ namespace BigSchool.Controllers
         [Authorize]
         public ActionResult Attending()
         {
-            var userId = User.Identity.GetUserId();
-            var courses = _dbContext.Attendances
-                .Where(a => a.Attendeeid == userId)
-                .Select(a => a.Course)
-                .Include(l => l.Lecturer)
-                .Include(l => l.Category)
-                .ToList();
-            var viewModel = new CourseViewModel
+            var upcommingCouese = _dbContext.Courses
+
+                    .Include(c => c.Lecturer)
+                    .Include(c => c.Category)
+                    .Where(c => c.DateTime > DateTime.Now);
+            var viewModel = new CourseViewModel()
             {
-                UpcommingCourses = courses,
+                UpcommingCourses = upcommingCouese,
                 ShowAction = User.Identity.IsAuthenticated
             };
             return View(viewModel);
+        }
+        [Authorize]
+        public ActionResult Mine()
+        {
+            var userid = User.Identity.GetUserId();
+            var courses = _dbContext.Courses
+                .Where(c => c.LecturerId == userid && c.DateTime > DateTime.Now)
+                .Include(l => l.Lecturer)
+                .Include(c => c.Category)
+                .ToList();
+            return View(courses);
+        }
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            var userId = User.Identity.GetUserId();
+            var course = _dbContext.Courses.Single(c => c.Id == id && c.LecturerId == userId);
+            var viewModel = new CourseViewModel
+            {
+                Categories = _dbContext.Categories.ToList(),
+                Date = course.DateTime.ToString("M/d/yyyy"),
+                Time = course.DateTime.ToString("HH:mm"),
+                Category = course.CategoryId,
+                Place = course.Place
+            };
+            return View("Create", viewModel);
         }
     }
 }

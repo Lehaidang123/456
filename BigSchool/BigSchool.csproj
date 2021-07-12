@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.PDF, Version=21.6.0.0, Culture=neutral, PublicKeyToken=f0262d67fe233d63, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.PDF.21.6.0\lib\net4.0\Aspose.PDF.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.DocumentDB.Core, Version=2.15.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.DocumentDB.Core.2.15.0\lib\netstandard1.6\Microsoft.Azure.DocumentDB.Core.dll</HintPath>
     </Reference>
@@ -392,6 +395,10 @@
     <Compile Include="Migrations\202107101205518_AddFollowingsTable.Designer.cs">
       <DependentUpon>202107101205518_AddFollowingsTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107120552429_AppliedChange.cs" />
+    <Compile Include="Migrations\202107120552429_AppliedChange.Designer.cs">
+      <DependentUpon>202107120552429_AppliedChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -465,6 +472,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Courses\Create.cshtml" />
     <Content Include="Views\Courses\Attending.cshtml" />
+    <Content Include="Views\Courses\Mine.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -502,6 +510,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107101205518_AddFollowingsTable.resx">
       <DependentUpon>202107101205518_AddFollowingsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107120552429_AppliedChange.resx">
+      <DependentUpon>202107120552429_AppliedChange.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
