@@ -103,6 +103,32 @@ namespace BigSchool.Controllers
             };
             return View("Create", viewModel);
         }
+        // GET: SanPhams/Delete/5
+        public ActionResult Delete(int id)
+        {
+            if (id == null)
+            {
+              
+            }
+            Course sanPham = _dbContext.Courses.Find(id);
+            if (sanPham == null)
+            {
+                return HttpNotFound();
+            }
+            return View(sanPham);
+        }
+
+        // POST: SanPhams/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Course sanPham = _dbContext.Courses.Find(id);
+            _dbContext.Courses.Remove(sanPham);
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index","Home");
+        }
+
 
         [Authorize]
         [HttpPost]
