@@ -1,5 +1,4 @@
-﻿using Aspose.Pdf;
-using BigSchool.Models;
+﻿using BigSchool.Models;
 using BigSchool.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
@@ -24,9 +23,9 @@ namespace BigSchool.Controllers
         {
             var viewModel = new CourseViewModel
             {
-                
-                Categories = _dbContext.Categories.ToList();
-                
+                Heading = "Add Course",
+                Categories = _dbContext.Categories.ToList()
+
             };
             return View(viewModel);
         }
@@ -54,18 +53,20 @@ namespace BigSchool.Controllers
             _dbContext.SaveChanges();
             return RedirectToAction("Index", "Home");
         }
-       
+
         [Authorize]
         public ActionResult Attending()
         {
-            var upcommingCouese = _dbContext.Courses
-
-                    .Include(c => c.Lecturer)
-                    .Include(c => c.Category)
-                    .Where(c => c.DateTime > DateTime.Now);
-            var viewModel = new CourseViewModel()
+            var userId = User.Identity.GetUserId();
+            var courses = _dbContext.Attendances
+                .Where(a => a.Attendeeid == userId)
+                .Select(a => a.Course)
+                .Include(l => l.Lecturer)
+                .Include(l => l.Category)
+                .ToList();
+            var viewModel = new CourseViewModel
             {
-                UpcommingCourses = upcommingCouese,
+                UpcommingCourses = courses,
                 ShowAction = User.Identity.IsAuthenticated
             };
             return View(viewModel);
@@ -73,28 +74,55 @@ namespace BigSchool.Controllers
         [Authorize]
         public ActionResult Mine()
         {
-            var userid = User.Identity.GetUserId();
+            var userId = User.Identity.GetUserId();
             var courses = _dbContext.Courses
-                .Where(c => c.LecturerId == userid && c.DateTime > DateTime.Now)
+                .Where(c => c.LecturerId == userId && c.DateTime > DateTime.Now)
                 .Include(l => l.Lecturer)
                 .Include(c => c.Category)
                 .ToList();
+
             return View(courses);
         }
+
         [Authorize]
         public ActionResult Edit(int id)
         {
             var userId = User.Identity.GetUserId();
             var course = _dbContext.Courses.Single(c => c.Id == id && c.LecturerId == userId);
+
             var viewModel = new CourseViewModel
             {
                 Categories = _dbContext.Categories.ToList(),
                 Date = course.DateTime.ToString("M/d/yyyy"),
                 Time = course.DateTime.ToString("HH:mm"),
                 Category = course.CategoryId,
-                Place = course.Place
+                Place = course.Place,
+                Heading = "Edit Course",
+                Id = course.Id
+
             };
             return View("Create", viewModel);
         }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update(CourseViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                viewModel.Categories = _dbContext.Categories.ToList();
+                return View("Create", viewModel);
+
+            }
+            var userid = User.Identity.GetUserId();
+            var course = _dbContext.Courses.Single(c => c.Id == viewModel.Id && c.LecturerId == userid);
+            course.Place = viewModel.Place;
+            course.DateTime = viewModel.GetDateTime();
+            course.CategoryId = viewModel.Category;
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
